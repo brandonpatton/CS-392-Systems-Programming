@@ -1,0 +1,48 @@
+/*
+ * Assignment 1 CS392
+ * February 11, 2019
+ * I pledge my honor that I have abided by the Stevens Honor System
+ * Brandon Patton
+*/
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <errno.h>
+
+
+
+void *cat (FILE *file, unsigned int size, char *contents){
+	fread(contents, 1, size, file);
+	fwrite(contents, 1, size, stdout);	
+}
+
+int main (int argc, char** argv){
+	FILE *fpointer;
+	if (argc != 2){
+		perror("Error: ");
+	}
+	fpointer = fopen(argv[1], "r"); 
+	
+	if (fpointer == NULL){
+		perror("Error: ");
+							
+	}
+	if(fseek(fpointer, 0, SEEK_END) !=0 ){
+		perror("Error: ");
+	} 
+	unsigned int size = ftell(fpointer);
+	if(size == -1){
+		perror("Error: ");
+	}
+	if(fseek(fpointer, 0, SEEK_SET)){
+		perror("Error: ");
+	}
+	char *memaloc;
+	memaloc = (char *) malloc (size);
+	cat(fpointer, size, memaloc);
+	if(fclose(fpointer) !=0){ 
+		perror("Error: ");
+	}
+	free(memaloc);
+}
